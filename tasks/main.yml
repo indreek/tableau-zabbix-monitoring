@@ -2,6 +2,15 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Monitoramento de músicas sendo tocadas em todas as radios do Icecast  #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+- name: Ensure Tableau Monitoring path exists
+  file:
+    path: '{{ script_path }}'
+    state: 'directory'
+    owner: 'zabbix'
+    group: 'zabbix'
+    mode: 'u=rw,g=r,o=r'
+  tags: 'copy_script'
+
 - name: Copy Tableau Monitoring Script
   template:
     src: 'tableau_check.py.j2'
