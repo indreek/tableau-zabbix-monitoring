@@ -4,7 +4,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 - name: Ensure Tableau Monitoring path exists
   file:
-    path: '{{ script_path }}'
+    path: '{{ tableau_zabbix_monitoring_script_path }}'
     state: 'directory'
     owner: 'zabbix'
     group: 'zabbix'
@@ -14,16 +14,26 @@
 - name: Copy Tableau Monitoring Script
   template:
     src: 'tableau_check.py.j2'
-    dest: '{{ script_path }}tableau_check.py'
+    dest: '{{ tableau_zabbix_monitoring_script_path }}tableau_check.py'
     owner: 'zabbix'
     group: 'zabbix'
-    mode: 'u=rw,g=r,o=r'
+    mode: 'u=rwx,g=rx,o=rx'
   tags: 'copy_script'
+
+- name: Copy Tableau Getter Script
+  template:
+    src: 'tableau_getter.py.j2'
+    dest: '{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py'
+    owner: 'zabbix'
+    group: 'zabbix'
+    mode: 'u=rwx,g=rx,o=rx'
+  tags: 'copy_script'
+
 
 - name: Copy Tableu UserParameter
   template:
     src: 'userparameter_tableau.conf.j2'
-    dest: '{{ userparameter_path }}userparameter_tableau.conf'
+    dest: '{{ tableau_zabbix_monitoring_userparameter_path }}userparameter_tableau.conf'
     owner: 'zabbix'
     group: 'zabbix'
     mode: 'u=rw,g=r,o=r'

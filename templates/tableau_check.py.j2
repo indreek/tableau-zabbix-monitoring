@@ -1,41 +1,97 @@
-import sys
-from xml.dom import minidom
-import requests
+#!/usr/bin/python3
 
-service = sys.argv[1]
-server_name = sys.argv[2]
-url = 'http://{{tableau_server}}/admin/systeminfo.xml'
-status_xml = {{status_xml}}
+import sys, os, time, requests,json, glob
+import xml.etree.cElementTree as ET
 
-req = requests.get(url)
-file = open(status_xml, 'wb')
+CLEANUP_OLD_LOGS = {{ tableau_zabbix_cleanup_old_logs }}
+URL = 'http://{{ tableau_zabbix_monitoring_server_address }}/admin/systeminfo.xml'
+LOGDIR = '{{ tableau_zabbix_monitoring_log_dir }}'
+STATUS_XML = os.path.join('{{ tableau_zabbix_monitoring_log_dir }}', '{{ tableau_zabbix_monitoring_status_xml }}')
+LOGFILENAME = '%04d-%02d-%02dT%02d:%02d' % time.localtime(time.time())[:5]
+LOGFILE = os.path.join(LOGDIR, LOGFILENAME)
+
+if not os.path.exists(LOGDIR):
+  os.makedirs(LOGDIR)
+
+req = requests.get(URL)
+file = open(STATUS_XML, 'wb')
 for chunk in req.iter_content(100000):
-    file.write(chunk)
+  file.write(chunk)
 file.close()
 
-xmldoc = minidom.parse(status_xml)
+#Parse XML
+tree = ET.parse(STATUS_XML)
+root = tree.getroot()
 
-serverlist = xmldoc.getElementsByTagName('machine')
+service_status = root.find('service').get('status');
+machines = root.find('machines')
 
-for server in serverlist:
-    if server.attributes['name'].value == server_name:
-        for item in server.childNodes:
-            if item.nodeName == service:
-                if item.attributes['status'].value == "Active":
-                    print(1)
-                    sys.exit()
-                elif item.attributes['status'].value == "Unlicensed":
-                    print(2)
-                    sys.exit()
-                elif item.attributes['status'].value == "Busy":
-                    print(3)
-                    sys.exit()
-                elif item.attributes['status'].value == "Passive":
-                    print(4)
-                    sys.exit()
-                elif item.attributes['status'].value == "Down":
-                    print(0)
-                    sys.exit()
-                else:
-                    print(5)
-                    sys.exit()
+zbx_discovery_machines = {"data":[]}
+zbx_discovery_machine_key = 'MACHINE'
+zbx_discovery_workers = {}
+zbx_discovery_worker_key = 'WORKER'
+
+tableau_status = {
+  "Unknown": 0
+  "Active": 1,
+  "Passive": 2,
+  "Unlicensed": 3,
+  "Busy": 4,
+  "Down": 5,
+  "ReadOnly": 6,
+  "ActiveSyncing": 7,
+  "StatusNotAvailable": 8,
+  "StatusNotAvailableSyncing": 9,
+  "NotAvailable": 10,
+  "DecommisionedReadOnly": 11,
+  "DecomisioningReadOnly": 12,
+  "DecommissionFailedReadOnly": 13,
+}
+
+def parse_xml_content():
+  for machine in machines:
+    machine_name = machine.get('name')
+    zbx_discovery_machines['data'].append({('#%s' % zbx_discovery_machine_key):machine_name})
+
+    for service in machine:
+      worker_id = service.get('worker')
+
+      if service.tag not in zbx_discovery_workers:
+        zbx_discovery_workers[service.tag] = { "data":[] }
+
+      zbx_discovery_workers[service.tag]['data'].append({('#%s' % zbx_discovery_worker_key):worker_id})
+
+      for key, value in service.items():
+        if key == 'worker':
+          continue
+
+        if key == 'status':
+          if value in tableau_status:
+            value = tableau_status[value]
+          else:
+            value = 0
+
+        yield('%s[%s,%s] %s' % (service.tag, worker_id, key, value))
+
+f = open(LOGFILE, 'w')
+
+f.write('tableau.service.status %s\n' % (tableau_status[service_status]))
+
+for line in parse_xml_content():
+    f.write('%s\n' %  line)
+
+f.write('%s.discovery %s\n' % (zbx_discovery_machine_key, json.dumps(zbx_discovery_machines)))
+for worker in zbx_discovery_workers:
+   f.write('WORKER.%s.discovery %s\n' % (worker, json.dumps(zbx_discovery_workers[worker])))
+f.close()
+
+os.symlink(LOGFILE, os.path.join(LOGDIR, 'latest.tmp'))
+os.rename(os.path.join(LOGDIR, 'latest.tmp'), os.path.join(LOGDIR, 'latest'))
+
+if CLEANUP_OLD_LOGS:
+    files = glob.glob(LOGDIR + '/*:*') # get all timestamp-named files
+    files.sort()
+    files.reverse()
+    while len(files) > CLEANUP_OLD_LOGS:
+        oldest_file = files.pop()
+        os.remove(oldest_file)

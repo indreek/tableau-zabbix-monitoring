@@ -1,0 +1,37 @@
+#!/usr/bin/python3
+
+"""Extracts named data item from {{ tableau_zabbix_monitoring_log_dir }}latest
+
+Usage:
+   .py dataitem
+
+"""
+
+import os, sys, time
+
+if len(sys.argv) == 0:
+  print -1
+  sys.exit()
+
+LOGDIR = "{{ tableau_zabbix_monitoring_log_dir }}"
+LOGFILE = os.path.join(LOGDIR, 'latest')
+
+f = open(LOGFILE)
+
+args = sys.argv[1:]
+
+if len(args) == 3:
+  item = '%s[%s,%s]' % tuple(args)
+else:
+  item = sys.argv[1] + ' '
+  ilen = len(item)
+
+
+loglines = [line for line in f.readlines() if line.find(item)==0]
+
+try:
+  value = loglines[0].split(' ',1)[1].strip()
+except:
+  value = sys.argv[1:]
+
+print (value or '0')
