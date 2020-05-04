@@ -1,16 +1,3 @@
-UserParameter=tableau.service.status,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py tableau.service.status
-UserParameter=tableau.applicationserver[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py applicationserver $1 $2
-UserParameter=tableau.backgrounder[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py backgrounder $1 $2
-UserParameter=tableau.cacheserver[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py cacheserver $1 $2
-UserParameter=tableau.clustercontroller[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py clustercontroller $1 $2
-UserParameter=tableau.coordination[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py coordination $1 $2
-UserParameter=tableau.dataserver[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py dataserver $1 $2
-UserParameter=tableau.filestore[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py filestore $1 $2
-UserParameter=tableau.gateway[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py gateway $1 $2
-UserParameter=tableau.hyper[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py hyper $1 $2
-UserParameter=tableau.repository[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py repository $1 $2
-UserParameter=tableau.searchandbrowse[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py searchandbrowse $1 $2
-UserParameter=tableau.vizqlserver[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py vizqlserver $1 $2
 UserParameter=tableau.MACHINE.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py MACHINE.discovery
 UserParameter=tableau.WORKER.applicationserver.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py WORKER.applicationserver.discovery
 UserParameter=tableau.WORKER.backgrounder.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py WORKER.backgrounder.discovery

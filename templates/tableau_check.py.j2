@@ -13,19 +13,7 @@ LOGFILE = os.path.join(LOGDIR, LOGFILENAME)
 if not os.path.exists(LOGDIR):
   os.makedirs(LOGDIR)
 
-req = requests.get(URL)
-file = open(STATUS_XML, 'wb')
-for chunk in req.iter_content(100000):
-  file.write(chunk)
-file.close()
-
-#Parse XML
-tree = ET.parse(STATUS_XML)
-root = tree.getroot()
-
-service_status = root.find('service').get('status')
-machines = root.find('machines')
-
+zbx_conf = '{{ tableau_zabbix_monitoring_zabbix_config_file }}'
 zbx_discovery_machines = {"data":[]}
 zbx_discovery_machine_key = 'MACHINE'
 zbx_discovery_workers = {}
@@ -48,41 +36,69 @@ tableau_status = {
   "DecommissionFailedReadOnly": 13,
 }
 
-def parse_xml_content():
-  for machine in machines:
-    machine_name = machine.get('name')
-    zbx_discovery_machines['data'].append({('#%s' % zbx_discovery_machine_key):machine_name})
+def zbx_sender(key, value):
+  zbx_cmd = "zabbix_sender -c %s -k %s -o %s" % (zbx_conf, key, value)
+  os.system(zbx_cmd)
 
-    for service in machine:
-      worker_id = service.get('worker')
+#Request XML status
+req = requests.get(URL)
+file = open(STATUS_XML, 'wb')
+for chunk in req.iter_content(100000):
+  file.write(chunk)
+file.close()
 
-      if service.tag not in zbx_discovery_workers:
-        zbx_discovery_workers[service.tag] = { "data":[] }
+#Parse XML
+tree = ET.parse(STATUS_XML)
+root = tree.getroot()
 
-      zbx_discovery_workers[service.tag]['data'].append({('#%s' % zbx_discovery_worker_key):worker_id})
+#Send overall service status to zabbix
+service_status = root.find('service').get('status')
+zbx_sender('tableau.service.status', tableau_status[service_status])
 
-      for key, value in service.items():
-        if key == 'worker':
-          continue
+#Send machines and services statuses to zabbix
+for machine in root.find('machines'):
+  machine_name = machine.get('name')
+  {% raw %}zbx_discovery_machines['data'].append({('{#%s}' % zbx_discovery_machine_key):machine_name}){% endraw %}
 
-        if key == 'status':
-          if value in tableau_status:
-            value = tableau_status[value]
-          else:
-            value = 0
+  # Create machine overall status
+  machine_service_statuses = []
 
-        yield('%s[%s,%s] %s' % (service.tag, worker_id, key, value))
+  for service in machine:
+    worker_id = service.get('worker')
 
+    if service.tag not in zbx_discovery_workers:
+      zbx_discovery_workers[service.tag] = { "data":[] }
+
+    {% raw %}zbx_discovery_workers[service.tag]['data'].append({("{#%s}" % zbx_discovery_worker_key):worker_id}){% endraw %}
+
+    for key, value in service.items():
+      if key == 'worker':
+        continue
+
+      if key == 'status':
+        #Convert machine status to integer
+        if value in tableau_status:
+          value = tableau_status[value]
+        else:
+          value = 0
+
+        #Add service status to machine overall status
+        machine_service_statuses.append(value)
+
+      #Send service status to zabbix
+      zbx_sender('tableau.%s[%s,%s]' % (service.tag, worker_id, key), value)
+
+  #Send overall machine status to zabbix
+  zbx_sender('tableau.machine[%s,status]' % (machine_name), max(machine_service_statuses))
+
+#Write discovery data to file
 f = open(LOGFILE, 'w')
 
-f.write('tableau.service.status %s\n' % (tableau_status[service_status]))
-
-for line in parse_xml_content():
-    f.write('%s\n' %  line)
-
-f.write('%s.discovery %s\n' % (zbx_discovery_machine_key, json.dumps(zbx_discovery_machines)))
+#Machine discovery
+f.write('MACHINE.discovery %s\n' % (json.dumps(zbx_discovery_machines)))
 for worker in zbx_discovery_workers:
-   f.write('WORKER.%s.discovery %s\n' % (worker, json.dumps(zbx_discovery_workers[worker])))
+  #Worker discovery
+  f.write('WORKER.%s.discovery %s\n' % (worker, json.dumps(zbx_discovery_workers[worker])))
 f.close()
 
 os.symlink(LOGFILE, os.path.join(LOGDIR, 'latest.tmp'))

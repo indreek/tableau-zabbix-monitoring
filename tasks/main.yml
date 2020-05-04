@@ -6,8 +6,8 @@
   file:
     path: '{{ tableau_zabbix_monitoring_script_path }}'
     state: 'directory'
-    owner: 'zabbix'
-    group: 'zabbix'
+    owner: '{{ tableau_zabbix_monitoring_user }}'
+    group: '{{ tableau_zabbix_monitoring_user }}'
     mode: 'u=rwx,g=rx,o=rx'
   tags: 'copy_script'
 
@@ -15,8 +15,8 @@
   template:
     src: 'tableau_check.py.j2'
     dest: '{{ tableau_zabbix_monitoring_script_path }}tableau_check.py'
-    owner: 'zabbix'
-    group: 'zabbix'
+    owner: '{{ tableau_zabbix_monitoring_user }}'
+    group: '{{ tableau_zabbix_monitoring_user }}'
     mode: 'u=rwx,g=rx,o=rx'
   tags: 'copy_script'
 
@@ -24,8 +24,8 @@
   template:
     src: 'tableau_getter.py.j2'
     dest: '{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py'
-    owner: 'zabbix'
-    group: 'zabbix'
+    owner: '{{ tableau_zabbix_monitoring_user }}'
+    group: '{{ tableau_zabbix_monitoring_user }}'
     mode: 'u=rwx,g=rx,o=rx'
   tags: 'copy_script'
 
@@ -34,8 +34,29 @@
   template:
     src: 'userparameter_tableau.conf.j2'
     dest: '{{ tableau_zabbix_monitoring_userparameter_path }}userparameter_tableau.conf'
-    owner: 'zabbix'
-    group: 'zabbix'
+    owner: '{{ tableau_zabbix_monitoring_user }}'
+    group: '{{ tableau_zabbix_monitoring_user }}'
     mode: 'u=rw,g=r,o=r'
   notify: 'restart zabbix-agent'
   tags: 'copy_userparameter'
+
+- name: Ensure Tableau Monitoring logging path exists
+  file:
+    path: '{{ tableau_zabbix_monitoring_log_dir }}'
+    state: 'directory'
+    owner: '{{ tableau_zabbix_monitoring_user }}'
+    group: '{{ tableau_zabbix_monitoring_user }}'
+    mode: 'u=rwx,g=rx,o=rx'
+  tags: 'copy_script'
+
+- name: Add tableau check crontab
+  cron:
+    name: "SSL certificate check"
+    hour: '{{ tableau_zabbix_monitoring_cron_hour }}'
+    minute: '{{ tableau_zabbix_monitoring_cron_minute }}'
+    user: '{{ tableau_zabbix_monitoring_user }}'
+    job: "/usr/lib/zabbix/modules/tableau/tableau_check.py"
+  become: yes
+  tags:
+    - crontab
+    - cron
