@@ -23,7 +23,7 @@ file.close()
 tree = ET.parse(STATUS_XML)
 root = tree.getroot()
 
-service_status = root.find('service').get('status');
+service_status = root.find('service').get('status')
 machines = root.find('machines')
 
 zbx_discovery_machines = {"data":[]}
@@ -32,7 +32,7 @@ zbx_discovery_workers = {}
 zbx_discovery_worker_key = 'WORKER'
 
 tableau_status = {
-  "Unknown": 0
+  "Unknown": 0,
   "Active": 1,
   "Passive": 2,
   "Unlicensed": 3,

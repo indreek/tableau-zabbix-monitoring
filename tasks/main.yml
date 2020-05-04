@@ -8,7 +8,7 @@
     state: 'directory'
     owner: 'zabbix'
     group: 'zabbix'
-    mode: 'u=rw,g=r,o=r'
+    mode: 'u=rwx,g=rx,o=rx'
   tags: 'copy_script'
 
 - name: Copy Tableau Monitoring Script

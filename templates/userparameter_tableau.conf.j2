@@ -11,6 +11,7 @@ UserParameter=tableau.hyper[*],{{ tableau_zabbix_monitoring_script_path }}tablea
 UserParameter=tableau.repository[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py repository $1 $2
 UserParameter=tableau.searchandbrowse[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py searchandbrowse $1 $2
 UserParameter=tableau.vizqlserver[*],{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py vizqlserver $1 $2
+UserParameter=tableau.MACHINE.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py MACHINE.discovery
 UserParameter=tableau.WORKER.applicationserver.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py WORKER.applicationserver.discovery
 UserParameter=tableau.WORKER.backgrounder.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py WORKER.backgrounder.discovery
 UserParameter=tableau.WORKER.cacheserver.discovery,{{ tableau_zabbix_monitoring_script_path }}tableau_getter.py WORKER.cacheserver.discovery
