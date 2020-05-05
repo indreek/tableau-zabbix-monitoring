@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-05-05T09:21:35Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Tableau server</template>
+            <name>Template Tableau server</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Tableau</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Tableau service status</name>
+                    <type>TRAP</type>
+                    <key>tableau.service.status</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>Tableau</name>
+                        </application>
+                    </applications>
+                    <valuemap>
+                        <name>Tableau worker status</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;&gt;1</expression>
+                            <name>Tableau service not active</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>tableau.MACHINE.discovery</name>
+                    <key>tableau.MACHINE.discovery</key>
+                    <delay>1h</delay>
+                    <description>MACHINE.discovery {&quot;data&quot;: [{&quot;#MACHINE&quot;: &quot;tableau&quot;}]}</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau machine $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.machine[{#MACHINE},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau machine {#MACHINE} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau machine {#MACHINE} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.applicationserver.discovery</name>
+                    <key>tableau.WORKER.applicationserver.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.applicationserver[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau applicationserver worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau applicationserver worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.backgrounder.discovery</name>
+                    <key>tableau.WORKER.backgrounder.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.backgrounder[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau backgrounder worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau backgrounder worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.cacheserver.discovery</name>
+                    <key>tableau.WORKER.cacheserver.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.cacheserver[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau vizqlserver worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau vizqlserver worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.clustercontroller.discovery</name>
+                    <key>tableau.WORKER.clustercontroller.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.clustercontroller[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau clustercontroller worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau clustercontroller worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.coordination.discovery</name>
+                    <key>tableau.WORKER.coordination.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.coordination[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau coordination worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau coordination worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.dataserver.discovery</name>
+                    <key>tableau.WORKER.dataserver.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.dataserver[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau vizqlserver worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau vizqlserver worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.filestore.discovery</name>
+                    <key>tableau.WORKER.filestore.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 failedTransfers</name>
+                            <type>TRAP</type>
+                            <key>tableau.filestore[{#WORKER},failedTransfers]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tableau worker $1 pendingTransfers</name>
+                            <type>TRAP</type>
+                            <key>tableau.filestore[{#WORKER},pendingTransfers]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.filestore[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau filestore worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau filestore worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tableau worker $1 syncTimestamp</name>
+                            <type>TRAP</type>
+                            <key>tableau.filestore[{#WORKER},syncTimestamp]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.gateway.discovery</name>
+                    <key>tableau.WORKER.gateway.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.gateway[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau gateway worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau gateway worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.hyper.discovery</name>
+                    <key>tableau.WORKER.hyper.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.hyper[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau hyper worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau hyper worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.repository.discovery</name>
+                    <key>tableau.WORKER.repository.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 preferred</name>
+                            <type>TRAP</type>
+                            <key>tableau.repository[{#WORKER},preferred]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>BOOL_TO_DECIMAL</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tableau worker $1 repository status</name>
+                            <type>TRAP</type>
+                            <key>tableau.repository[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau repository worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau repository worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.searchandbrowse.discovery</name>
+                    <key>tableau.WORKER.searchandbrowse.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.searchandbrowse[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau searchandbrowse worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau searchandbrowse worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>WORKER.vizqlserver.discovery</name>
+                    <key>tableau.WORKER.vizqlserver.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Tableau worker $1 status</name>
+                            <type>TRAP</type>
+                            <key>tableau.vizqlserver[{#WORKER},status]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Tableau</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Tableau worker status</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{nodata({$TABLEAU_NODATA_TIME})}=1</expression>
+                                    <name>Tableau vizqlserver worker {#WORKER} nodata</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Tableau vizqlserver worker {#WORKER} status {ITEM.LASTVALUE}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$TABLEAU_NODATA_TIME}</macro>
+                    <value>3600</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>Tableau worker status</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Unknown</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Active</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>Passive</newvalue>
+                </mapping>
+                <mapping>
+                    <value>3</value>
+                    <newvalue>Unlicensed</newvalue>
+                </mapping>
+                <mapping>
+                    <value>4</value>
+                    <newvalue>Busy</newvalue>
+                </mapping>
+                <mapping>
+                    <value>5</value>
+                    <newvalue>Down</newvalue>
+                </mapping>
+                <mapping>
+                    <value>6</value>
+                    <newvalue>ReadOnly</newvalue>
+                </mapping>
+                <mapping>
+                    <value>7</value>
+                    <newvalue>ActiveSyncing</newvalue>
+                </mapping>
+                <mapping>
+                    <value>8</value>
+                    <newvalue>StatusNotAvailable</newvalue>
+                </mapping>
+                <mapping>
+                    <value>9</value>
+                    <newvalue>StatusNotAvailableSyncing</newvalue>
+                </mapping>
+                <mapping>
+                    <value>10</value>
+                    <newvalue>NotAvailable</newvalue>
+                </mapping>
+                <mapping>
+                    <value>11</value>
+                    <newvalue>DecommisionedReadOnly</newvalue>
+                </mapping>
+                <mapping>
+                    <value>12</value>
+                    <newvalue>DecomisioningReadOnly</newvalue>
+                </mapping>
+                <mapping>
+                    <value>13</value>
+                    <newvalue>DecommissionFailedReadOnly</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
