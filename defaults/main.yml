@@ -7,6 +7,7 @@ tableau_zabbix_monitoring_userparameter_path: '/etc/zabbix/zabbix_agentd.d/'
 tableau_zabbix_monitoring_user: 'zabbix'
 tableau_zabbix_monitoring_status_xml: 'tableau_status.xml'
 tableau_zabbix_monitoring_server_address: 127.0.0.1
-tableau_zabbix_monitoring_script_path: '/opt/scripts/'
+tableau_zabbix_monitoring_script_path: '/usr/lib/zabbix/modules/tableau/'
 tableau_zabbix_monitoring_log_dir: '/var/log/zabbix/tableau/'
 tableau_zabbix_cleanup_old_logs: 5
+
